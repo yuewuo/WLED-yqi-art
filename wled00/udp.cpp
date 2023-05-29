@@ -508,7 +508,10 @@ void handleNotifications()
   if (udpIn[0] > 0 && udpIn[0] < 5)
   {
     realtimeIP = (isSupp) ? notifier2Udp.remoteIP() : notifierUdp.remoteIP();
-    DEBUG_PRINTLN(realtimeIP);
+
+    DEBUG_PRINT("+");  // reduce printing during UDP
+    // DEBUG_PRINTLN(realtimeIP);
+  
     if (packetSize < 2) return;
 
     if (udpIn[1] == 0)
