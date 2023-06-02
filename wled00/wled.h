@@ -832,3 +832,6 @@ public:
   void disableWatchdog();
 };
 #endif        // WLED_H
+
+// it takes up to 60ms to run a single function, return cm
+int HC_SR04_get_distance();

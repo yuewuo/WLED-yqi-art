@@ -21,3 +21,11 @@
 #define CLIENT_PASS "yqiart20230617"
 
 //#define MAX_LEDS 1500       //Maximum total LEDs. More than 1500 might create a low memory situation on ESP8266.
+
+#ifndef HC_SR04_TRIG_PIN
+#define HC_SR04_TRIG_PIN 4  // D2 (GPIO4) on Wemod D1 mini compatible boards
+#endif
+
+#ifndef HC_SR04_ECHO_PIN
+#define HC_SR04_ECHO_PIN 5  // D1 (GPIO5) on Wemod D1 mini compatible boards
+#endif

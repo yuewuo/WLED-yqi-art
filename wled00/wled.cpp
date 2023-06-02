@@ -287,6 +287,8 @@ void WLED::setup()
   DEBUG_PRINT(" ");
   DEBUG_PRINT(VERSION);
   DEBUG_PRINTLN(F(" INIT---"));
+  pinMode(HC_SR04_TRIG_PIN, OUTPUT); // Sets the trigPin as an Output
+  pinMode(HC_SR04_ECHO_PIN, INPUT); // Sets the echoPin as an Input
 #ifdef ARDUINO_ARCH_ESP32
   DEBUG_PRINT(F("esp32 "));
   DEBUG_PRINTLN(ESP.getSdkVersion());
@@ -905,4 +907,16 @@ void WLED::handleStatusLED()
     #endif
   }
   #endif
+}
+
+#define SOUND_VELOCITY 0.034
+int HC_SR04_get_distance() {
+  digitalWrite(HC_SR04_TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(HC_SR04_TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(HC_SR04_TRIG_PIN, LOW);
+  long duration = pulseInLong(HC_SR04_ECHO_PIN, HIGH);
+  float distanceCm = duration * SOUND_VELOCITY/2;
+  return (int)distanceCm;
 }
