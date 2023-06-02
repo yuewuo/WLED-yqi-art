@@ -264,6 +264,10 @@ void initServer()
     request->send(200, "text/plain", (String)HC_SR04_get_distance());
   });
 
+  server.on("/distance_2", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/plain", (String)HC_SR04_get_distance_2());
+  });
+
 #ifdef WLED_ENABLE_SIMPLE_UI
   server.on("/simple.htm", HTTP_GET, [](AsyncWebServerRequest *request){
     if (handleFileRead(request, "/simple.htm")) return;

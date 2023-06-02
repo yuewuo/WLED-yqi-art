@@ -29,3 +29,11 @@
 #ifndef HC_SR04_ECHO_PIN
 #define HC_SR04_ECHO_PIN 5  // D1 (GPIO5) on Wemod D1 mini compatible boards
 #endif
+
+#ifndef HC_SR04_TRIG_PIN_2
+#define HC_SR04_TRIG_PIN_2 15  // D8 (GPIO15) on Wemod D1 mini compatible boards
+#endif
+
+#ifndef HC_SR04_ECHO_PIN_2
+#define HC_SR04_ECHO_PIN_2 13  // D7 (GPIO13) on Wemod D1 mini compatible boards
+#endif

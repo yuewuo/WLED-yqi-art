@@ -289,6 +289,8 @@ void WLED::setup()
   DEBUG_PRINTLN(F(" INIT---"));
   pinMode(HC_SR04_TRIG_PIN, OUTPUT); // Sets the trigPin as an Output
   pinMode(HC_SR04_ECHO_PIN, INPUT); // Sets the echoPin as an Input
+  pinMode(HC_SR04_TRIG_PIN_2, OUTPUT); // Sets the trigPin as an Output
+  pinMode(HC_SR04_ECHO_PIN_2, INPUT); // Sets the echoPin as an Input
 #ifdef ARDUINO_ARCH_ESP32
   DEBUG_PRINT(F("esp32 "));
   DEBUG_PRINTLN(ESP.getSdkVersion());
@@ -917,6 +919,17 @@ int HC_SR04_get_distance() {
   delayMicroseconds(10);
   digitalWrite(HC_SR04_TRIG_PIN, LOW);
   long duration = pulseInLong(HC_SR04_ECHO_PIN, HIGH);
+  float distanceCm = duration * SOUND_VELOCITY/2;
+  return (int)distanceCm;
+}
+
+int HC_SR04_get_distance_2() {
+  digitalWrite(HC_SR04_TRIG_PIN_2, LOW);
+  delayMicroseconds(2);
+  digitalWrite(HC_SR04_TRIG_PIN_2, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(HC_SR04_TRIG_PIN_2, LOW);
+  long duration = pulseInLong(HC_SR04_ECHO_PIN_2, HIGH);
   float distanceCm = duration * SOUND_VELOCITY/2;
   return (int)distanceCm;
 }
