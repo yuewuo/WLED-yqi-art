@@ -1,0 +1,19 @@
+
+
+
+<script>
+
+const socket = new WebSocket("ws://localhost:3000/")
+
+
+ws.onopen = function() {
+    
+    // Web Socket is connected, send data using send()
+    ws.send("Message to send");
+    alert("Message is sent...");
+};
+
+console.log(socket)
+
+</script>
+

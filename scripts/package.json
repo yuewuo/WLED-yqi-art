@@ -1,6 +1,7 @@
 {
     "dependencies": {
-      "pythonia": "latest"
+        "pythonia": "latest",
+        "ws": "^8.13.0"
     },
     "type": "module"
 }
