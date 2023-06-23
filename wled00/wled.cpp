@@ -53,6 +53,7 @@ void WLED::loop()
   handleDMX();
 #endif
   userLoop();
+  sensor_udp_loop();
 
   #ifdef WLED_DEBUG
   unsigned long usermodMillis = millis();
@@ -849,7 +850,9 @@ void WLED::handleConnection()
     }
     initInterfaces();
     userConnected();
+    sensor_udp_user_connected();
     usermods.connected();
+
     lastMqttReconnectAttempt = 0; // force immediate update
 
     // shut down AP
@@ -918,7 +921,9 @@ int HC_SR04_get_distance() {
   digitalWrite(HC_SR04_TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(HC_SR04_TRIG_PIN, LOW);
-  long duration = pulseInLong(HC_SR04_ECHO_PIN, HIGH);
+  long duration = pulseInLong(HC_SR04_ECHO_PIN, HIGH, 70000);  // 70ms max 
+  Serial.print("duration (us): ");
+  Serial.println(duration);
   float distanceCm = duration * SOUND_VELOCITY/2;
   return (int)distanceCm;
 }
@@ -929,7 +934,33 @@ int HC_SR04_get_distance_2() {
   digitalWrite(HC_SR04_TRIG_PIN_2, HIGH);
   delayMicroseconds(10);
   digitalWrite(HC_SR04_TRIG_PIN_2, LOW);
-  long duration = pulseInLong(HC_SR04_ECHO_PIN_2, HIGH);
+  long duration = pulseInLong(HC_SR04_ECHO_PIN_2, HIGH, 70000);  // 70ms max 
   float distanceCm = duration * SOUND_VELOCITY/2;
   return (int)distanceCm;
+}
+
+#include <WiFiUdp.h>
+
+WiFiUDP sensor_UDP;
+const unsigned int sensor_localUdpPort = 21366; // local port to listen on
+char sensor_data[2];
+
+void sensor_udp_user_connected() {
+  sensor_UDP.begin(sensor_localUdpPort);
+}
+
+void sensor_udp_loop() {
+  int packetSize = sensor_UDP.parsePacket();
+  if (packetSize) {
+    int sensor_index = sensor_UDP.read();
+    Serial.println(sensor_index);
+    int distance = sensor_index == 0 ? HC_SR04_get_distance() : HC_SR04_get_distance_2();
+    sensor_UDP.beginPacket(sensor_UDP.remoteIP(), sensor_UDP.remotePort());
+    sensor_data[0] = distance & 0xFF;
+    sensor_data[1] = (distance >> 8) & 0xFF;
+    sensor_UDP.write(sensor_data, 2);
+    sensor_UDP.endPacket();
+    // discard all packets currently available
+    while(sensor_UDP.parsePacket());
+  }
 }

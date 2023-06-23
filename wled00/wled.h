@@ -325,7 +325,7 @@ WLED_GLOBAL bool gammaCorrectCol _INIT(true ); // use gamma correction on colors
 WLED_GLOBAL bool gammaCorrectBri _INIT(false); // use gamma correction on brightness
 WLED_GLOBAL float gammaCorrectVal _INIT(2.8f); // gamma correction value
 
-WLED_GLOBAL byte col[]    _INIT_N(({ 255, 160, 0, 0 }));  // current RGB(W) primary color. col[] should be updated if you want to change the color.
+WLED_GLOBAL byte col[]    _INIT_N(({ 20, 0, 0, 0 }));  // current RGB(W) primary color. col[] should be updated if you want to change the color.
 WLED_GLOBAL byte colSec[] _INIT_N(({ 0, 0, 0, 0 }));      // current RGB(W) secondary color
 WLED_GLOBAL byte briS     _INIT(128);                     // default brightness
 
@@ -836,3 +836,6 @@ public:
 // it takes up to 60ms to run a single function, return cm
 int HC_SR04_get_distance();
 int HC_SR04_get_distance_2();
+
+void sensor_udp_loop();
+void sensor_udp_user_connected();
