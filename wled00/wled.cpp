@@ -914,6 +914,14 @@ void WLED::handleStatusLED()
   #endif
 }
 
+void print_duration(int sensor_index, long duration) {
+  Serial.print("sensor (");
+  Serial.print(sensor_index);
+  Serial.print("): ");
+  Serial.print(duration);
+  Serial.println(" us");
+}
+
 #define SOUND_VELOCITY 0.034
 int HC_SR04_get_distance() {
   digitalWrite(HC_SR04_TRIG_PIN, LOW);
@@ -921,9 +929,8 @@ int HC_SR04_get_distance() {
   digitalWrite(HC_SR04_TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(HC_SR04_TRIG_PIN, LOW);
-  long duration = pulseInLong(HC_SR04_ECHO_PIN, HIGH, 70000);  // 70ms max 
-  Serial.print("duration (us): ");
-  Serial.println(duration);
+  long duration = pulseInLong(HC_SR04_ECHO_PIN, HIGH, 70000);  // 70ms max
+  print_duration(0, duration);
   float distanceCm = duration * SOUND_VELOCITY/2;
   return (int)distanceCm;
 }
@@ -935,6 +942,7 @@ int HC_SR04_get_distance_2() {
   delayMicroseconds(10);
   digitalWrite(HC_SR04_TRIG_PIN_2, LOW);
   long duration = pulseInLong(HC_SR04_ECHO_PIN_2, HIGH, 70000);  // 70ms max 
+  print_duration(1, duration);
   float distanceCm = duration * SOUND_VELOCITY/2;
   return (int)distanceCm;
 }
@@ -953,7 +961,6 @@ void sensor_udp_loop() {
   int packetSize = sensor_UDP.parsePacket();
   if (packetSize) {
     int sensor_index = sensor_UDP.read();
-    Serial.println(sensor_index);
     int distance = sensor_index == 0 ? HC_SR04_get_distance() : HC_SR04_get_distance_2();
     sensor_UDP.beginPacket(sensor_UDP.remoteIP(), sensor_UDP.remotePort());
     sensor_data[0] = distance & 0xFF;
