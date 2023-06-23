@@ -959,15 +959,22 @@ void sensor_udp_user_connected() {
 
 void sensor_udp_loop() {
   int packetSize = sensor_UDP.parsePacket();
-  if (packetSize) {
+  bool sensor_visited[2] = { false, false };
+  while (packetSize) {
     int sensor_index = sensor_UDP.read();
+    if (sensor_visited[sensor_index]) {
+      packetSize = sensor_UDP.parsePacket();  // next packet
+      continue;
+    }
+    sensor_visited[sensor_index] = true;  // mark as visited
     int distance = sensor_index == 0 ? HC_SR04_get_distance() : HC_SR04_get_distance_2();
     sensor_UDP.beginPacket(sensor_UDP.remoteIP(), sensor_UDP.remotePort());
     sensor_data[0] = distance & 0xFF;
     sensor_data[1] = (distance >> 8) & 0xFF;
-    sensor_UDP.write(sensor_data, 2);
+    sensor_data[2] = sensor_index;
+    sensor_UDP.write(sensor_data, 3);
     sensor_UDP.endPacket();
-    // discard all packets currently available
-    while(sensor_UDP.parsePacket());
+    // process next packet
+    packetSize = sensor_UDP.parsePacket();
   }
 }
